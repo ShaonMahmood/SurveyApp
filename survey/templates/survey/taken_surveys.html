@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Taken Surveys
+{% endblock title %}
+
+{% block content %}
+    <h2>Taken Surveys for {% if user.is_superuser %} all {% else %} {{ user.username }} {% endif %}</h2>
+
+    {% if object_list %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Survey Name</th>
+            <th>Created At</th>
+            <th>Status</th>
+            <th>View</th>
+        </tr>
+
+        {% for obj in object_list %}
+        <tr>
+            <td>{{ obj.id }}</td>
+            <td>{{ obj.participated_user.username }}</td>
+            <td>{{ obj.survey.name }}</td>
+            <td>{{ obj.created_at }}</td>
+            <td>{{ obj.status }}</td>
+            <td><a href="{% url 'survey-taken-detail-view' obj.pk %}">View Details</a></td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+    {% else %}
+        <h3> No surveys yet</h3>
+    {% endif %}
+
+
+{% endblock content %}

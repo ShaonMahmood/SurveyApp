@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Taken Surveys Detail
+{% endblock title %}
+
+{% block content %}
+    <h2>Taken Survey details of id: {{ object.id }}</h2>
+    <br>
+    {% for survey_answer in object.survey_answers.all %}
+        <div style="margin-bottom: 50px">
+            <div>
+                <p><b>Question {{ forloop.counter }}: </b> {{ survey_answer.question.text }}</p>
+            </div>
+            <div>
+                <p><b>Type: </b> {{ survey_answer.question.question_type }}</p>
+            </div>
+            <div>
+                <p><b>Answer: </b> {{ survey_answer.text }}</p>
+            </div>
+        </div>
+
+    {% endfor %}
+
+{% endblock content %}

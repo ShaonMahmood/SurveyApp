@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+survey
+{% endblock title %}
+
+{% block scripts %}
+    {% if status == 'new' %}
+        <script type="text/javascript">
+            let time_for_survey = "{{ obj.time }}";
+            console.log(time_for_survey);
+            let questions = [
+                {% for question in obj.questions.all %}
+                    {% if not forloop.first %},{% endif %}
+                    {
+                        text: "{{ question.text }}",
+                        order: "{{ question.order }}",
+                        id: "{{ question.id }}",
+                        type: "{{ question.question_type }}",
+                        placeholder: "{{ question.placeholder }}",
+                        answer_options: [
+                        {% for option in question.answer_options.all %}
+                            {% if not forloop.first %},{% endif %}
+                            {
+                                text: "{{ option.text }}",
+                                id: "{{ option.id }}",
+                                value: "{{ option.value }}"
+                            }
+                        {% endfor %}
+                        ]
+                    }
+                {% endfor %}
+                ]
+        </script>
+        <script src="{% static 'survey/survey.js' %}" defer></script>
+        <script src="{% static 'survey/timer.js' %}" defer></script>
+    {% endif %}
+    <script src="{% static 'survey/common.js' %}" defer></script>
+{% endblock scripts %}
+
+{% block content %}
+    {% if status == 'participated already' %}
+        <div class="s-already">
+            <h2>Already Participated</h2>
+        </div>
+    {% else %}
+        <div id="question-section">
+            <div class="survey-heading row">
+                <div class="col-md-6 text-left">
+                    <h3>Survey Name: {{ obj.name }}</h3>
+                    <h3>User: {{ user.username }}</h3>
+                </div>
+                <div id="clockdiv" class="text-right col-md-6">
+                    <h2>
+                        <span class="hours"></span>:
+                        <span class="minutes"></span>:
+                        <span class="seconds"></span>
+                    </h2>
+
+                </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 100px">
+                {% csrf_token %}
+                <div class="survey-container">
+                    <div id="survey"></div>
+                </div>
+                <button id="previous">Previous Question</button>
+                <button id="next">Next Question</button>
+                <button id="submit">Submit Survey</button>
+            </div>
+        </div>
+    {% endif %}
+
+    <div id="results"></div>
+    <div id="backbutton" class="back-button-class">
+        <button id="back-button">
+            Back To Home
+        </button>
+    </div>
+{% endblock content %}
